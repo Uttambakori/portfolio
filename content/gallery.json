@@ -1,98 +1,10 @@
 [
     {
-        "id": "1",
-        "src": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
-        "title": "Abstract Gradient Study",
-        "category": "Digital Art",
-        "width": 800,
-        "height": 1000
-    },
-    {
         "id": "2",
-        "src": "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
+        "src": "/gallery/chatgpt-image-feb-23--2026--08-04-14-pm-1772126485404.png",
         "title": "Typography Exploration",
         "category": "Typography",
-        "width": 800,
-        "height": 600
-    },
-    {
-        "id": "3",
-        "src": "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=800&q=80",
-        "title": "Color Palette — Autumn",
-        "category": "Brand Identity",
-        "width": 800,
-        "height": 1200
-    },
-    {
-        "id": "4",
-        "src": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800&q=80",
-        "title": "Fluid Forms",
-        "category": "Digital Art",
-        "width": 800,
-        "height": 800
-    },
-    {
-        "id": "5",
-        "src": "https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=800&q=80",
-        "title": "Neon Geometry",
-        "category": "Poster Design",
-        "width": 800,
-        "height": 500
-    },
-    {
-        "id": "6",
-        "src": "https://images.unsplash.com/photo-1579547945413-497e1b99dac0?w=800&q=80",
-        "title": "Paper Texture Series",
-        "category": "Editorial",
-        "width": 800,
-        "height": 1100
-    },
-    {
-        "id": "7",
-        "src": "https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=800&q=80",
-        "title": "Marble Ink",
-        "category": "Digital Art",
-        "width": 800,
-        "height": 900
-    },
-    {
-        "id": "8",
-        "src": "https://images.unsplash.com/photo-1549490349-8643362247b5?w=800&q=80",
-        "title": "Spectrum Gradient",
-        "category": "Poster Design",
-        "width": 800,
-        "height": 600
-    },
-    {
-        "id": "9",
-        "src": "https://images.unsplash.com/photo-1620121692029-d088224ddc74?w=800&q=80",
-        "title": "Soft Light Study",
-        "category": "Photography",
-        "width": 800,
-        "height": 1000
-    },
-    {
-        "id": "10",
-        "src": "https://images.unsplash.com/photo-1604871000636-074fa5117945?w=800&q=80",
-        "title": "Minimal Composition",
-        "category": "Brand Identity",
-        "width": 800,
-        "height": 700
-    },
-    {
-        "id": "11",
-        "src": "https://images.unsplash.com/photo-1567095761054-7a02e69e5b2b?w=800&q=80",
-        "title": "Golden Ratio Grid",
-        "category": "Typography",
-        "width": 800,
-        "height": 1100
-    },
-    {
-        "id": "12",
-        "src": "https://images.unsplash.com/photo-1553356084-58ef4a67b2a7?w=800&q=80",
-        "title": "Liquid Color",
-        "category": "Digital Art",
-        "width": 800,
-        "height": 800
+        "width": 1024,
+        "height": 1024
     }
 ]
