@@ -220,32 +220,9 @@ function GalleryContent() {
                     height = dims.h;
                 } catch { /* use defaults */ }
 
-                // Try AI categorization
-                let category = 'Uncategorized';
-                let title = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-                try {
-                    const imgResponse = await fetch(uploadData.path);
-                    const imgBlob = await imgResponse.blob();
-                    const reader = new FileReader();
-                    const base64 = await new Promise<string>((resolve) => {
-                        reader.onload = () => {
-                            const result = reader.result as string;
-                            resolve(result.split(',')[1]);
-                        };
-                        reader.readAsDataURL(imgBlob);
-                    });
-
-                    const aiRes = await fetch('/api/admin/ai', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ imageBase64: base64, mimeType: imgBlob.type }),
-                    });
-                    if (aiRes.ok) {
-                        const aiData = await aiRes.json();
-                        category = aiData.category || category;
-                        title = aiData.title || title;
-                    }
-                } catch { /* Use defaults if AI fails */ }
+                // Use filename as title, skip AI to keep bulk upload fast
+                const category = 'Uncategorized';
+                const title = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
 
                 // Add to gallery
                 const galleryRes = await fetch('/api/admin/gallery', {
@@ -533,7 +510,7 @@ function GalleryContent() {
                         />
                     </div>
                     <p className="text-[11px] text-[#555] mt-2">
-                        🤖 AI is auto-categorizing each image...
+                        You can categorize images later using the edit button
                     </p>
                 </div>
             )}
