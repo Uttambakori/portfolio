@@ -42,6 +42,7 @@ function PostsContent() {
     const [message, setMessage] = useState('');
     const [viewMode, setViewMode] = useState<'editor' | 'preview' | 'split'>('split');
     const [aiFormatting, setAiFormatting] = useState(false);
+    const [aiGeneratingTitle, setAiGeneratingTitle] = useState(false);
 
     useEffect(() => {
         fetchPosts();
@@ -198,6 +199,47 @@ function PostsContent() {
         }
     }
 
+    // AI generate title & excerpt from content
+    async function handleAiTitle() {
+        if (!formData.content.trim() || aiGeneratingTitle) return;
+        setAiGeneratingTitle(true);
+        setMessage('');
+
+        try {
+            const res = await fetch('/api/admin/ai/format', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: `Based on this article content, suggest a title and a short excerpt (1-2 sentences summary). Respond in this exact JSON format only, no other text:\n{"title": "Suggested Title", "excerpt": "A brief summary of the article."}\n\nArticle content:\n${formData.content.substring(0, 3000)}`
+                }),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                const text = data.formatted || '';
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    const parsed = JSON.parse(jsonMatch[0]);
+                    if (parsed.title) {
+                        handleTitleChange(parsed.title);
+                    }
+                    if (parsed.excerpt) {
+                        setFormData((prev) => ({ ...prev, excerpt: parsed.excerpt }));
+                    }
+                    setMessage('✨ Title & excerpt generated');
+                } else {
+                    setMessage('AI returned unexpected format');
+                }
+            } else {
+                setMessage('AI title generation failed');
+            }
+        } catch {
+            setMessage('AI title generation failed');
+        } finally {
+            setAiGeneratingTitle(false);
+        }
+    }
+
     // Form view
     if (showForm) {
         return (
@@ -254,16 +296,32 @@ function PostsContent() {
                     <div className={viewMode === 'preview' ? 'hidden' : ''}>
                         {/* Title - Large and prominent */}
                         <div className="mb-4">
-                            <input
-                                type="text"
-                                value={formData.title}
-                                onChange={(e) => handleTitleChange(e.target.value)}
-                                placeholder="Post Title"
-                                required
-                                className="w-full px-0 py-3 bg-transparent border-none
-                                    text-[28px] font-serif text-[#e5e5e0] placeholder-[#333] outline-none
-                                    tracking-tight"
-                            />
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    value={formData.title}
+                                    onChange={(e) => handleTitleChange(e.target.value)}
+                                    placeholder="Post Title"
+                                    required
+                                    className="flex-1 px-0 py-3 bg-transparent border-none
+                                        text-[28px] font-serif text-[#e5e5e0] placeholder-[#333] outline-none
+                                        tracking-tight"
+                                />
+                                {formData.content.trim() && (
+                                    <button
+                                        type="button"
+                                        onClick={handleAiTitle}
+                                        disabled={aiGeneratingTitle}
+                                        title="Generate title & excerpt with AI from content"
+                                        className={`px-3 py-1.5 text-[12px] rounded-md transition-all shrink-0 ${aiGeneratingTitle
+                                            ? 'text-[#8888cc] bg-[#1a1e2e] animate-pulse'
+                                            : 'text-[#555] hover:text-[#8888cc] hover:bg-[#1a1e2e]'
+                                            }`}
+                                    >
+                                        {aiGeneratingTitle ? '🤖 ...' : '🤖 Title'}
+                                    </button>
+                                )}
+                            </div>
                             {/* Auto-generated slug */}
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="text-[11px] text-[#444]">/writing/</span>
