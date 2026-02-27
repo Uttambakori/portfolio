@@ -25,6 +25,50 @@ function MdxImage({ src, alt, caption }: { src: string; alt?: string; caption?: 
     );
 }
 
+function PdfLink({ href, children }: { href: string; children?: React.ReactNode }) {
+    const filename = href.split('/').pop() || 'Document';
+    return (
+        <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-5 py-4 bg-image-placeholder rounded-[6px] no-underline
+                border border-accent-secondary hover:border-link transition-colors my-6 group"
+        >
+            <span className="text-[24px]">📄</span>
+            <span className="flex-1">
+                <span className="text-primary text-[15px] block group-hover:text-link transition-colors">
+                    {children || filename}
+                </span>
+                <span className="text-secondary text-caption">PDF · Click to open</span>
+            </span>
+            <span className="text-secondary text-[13px] group-hover:text-link transition-colors">↗</span>
+        </a>
+    );
+}
+
+function FigmaEmbed({ src }: { src: string }) {
+    const embedUrl = src.includes('figma.com/embed')
+        ? src
+        : `https://www.figma.com/embed?embed_host=portfolio&url=${encodeURIComponent(src)}`;
+
+    return (
+        <figure className="my-8">
+            <div className="w-full rounded-[6px] overflow-hidden border border-accent-secondary bg-image-placeholder">
+                <iframe
+                    src={embedUrl}
+                    className="w-full border-none"
+                    style={{ height: '500px' }}
+                    allowFullScreen
+                />
+            </div>
+            <figcaption className="text-caption text-secondary text-center mt-3">
+                Figma Design
+            </figcaption>
+        </figure>
+    );
+}
+
 type HeadingProps = React.HTMLAttributes<HTMLHeadingElement>;
 type ParagraphProps = React.HTMLAttributes<HTMLParagraphElement>;
 type AnchorProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
@@ -47,12 +91,19 @@ export const mdxComponents = {
     p: (props: ParagraphProps) => (
         <p className="mb-6 leading-[1.8]" {...props} />
     ),
-    a: (props: AnchorProps) => (
-        <a
-            className="text-link underline underline-offset-[3px] decoration-accent transition-colors duration-300 hover:text-primary"
-            {...props}
-        />
-    ),
+    a: (props: AnchorProps) => {
+        // Check if it's a PDF link
+        const href = props.href || '';
+        if (href.endsWith('.pdf') || (typeof props.children === 'string' && props.children.includes('(PDF)'))) {
+            return <PdfLink href={href}>{props.children}</PdfLink>;
+        }
+        return (
+            <a
+                className="text-link underline underline-offset-[3px] decoration-accent transition-colors duration-300 hover:text-primary"
+                {...props}
+            />
+        );
+    },
     blockquote: (props: BlockquoteProps) => (
         <blockquote
             className="border-l-2 border-accent-secondary pl-6 italic text-secondary my-6"
@@ -72,4 +123,18 @@ export const mdxComponents = {
     img: (props: any) => <MdxImage src={props.src} alt={props.alt} />,
     Image: MdxImage,
     FullBleed,
+    PdfLink,
+    FigmaEmbed,
+    // Handle div elements that may contain figma embeds
+    div: (props: any) => {
+        if (props.className === 'figma-embed') {
+            const iframe = React.Children.toArray(props.children).find(
+                (child: any) => child?.type === 'iframe'
+            ) as any;
+            if (iframe?.props?.src) {
+                return <FigmaEmbed src={iframe.props.src} />;
+            }
+        }
+        return <div {...props} />;
+    },
 };

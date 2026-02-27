@@ -35,8 +35,8 @@ export async function getAdminPasswordHash(): Promise<string> {
     return bcrypt.hash('admin123', 12);
 }
 
-export function setAuthCookie(token: string) {
-    const cookieStore = cookies();
+export async function setAuthCookie(token: string) {
+    const cookieStore = await cookies();
     cookieStore.set(TOKEN_NAME, token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -46,18 +46,18 @@ export function setAuthCookie(token: string) {
     });
 }
 
-export function getAuthToken(): string | undefined {
-    const cookieStore = cookies();
+export async function getAuthToken(): Promise<string | undefined> {
+    const cookieStore = await cookies();
     return cookieStore.get(TOKEN_NAME)?.value;
 }
 
-export function removeAuthCookie() {
-    const cookieStore = cookies();
+export async function removeAuthCookie() {
+    const cookieStore = await cookies();
     cookieStore.delete(TOKEN_NAME);
 }
 
-export function isAuthenticated(): boolean {
-    const token = getAuthToken();
+export async function isAuthenticated(): Promise<boolean> {
+    const token = await getAuthToken();
     if (!token) return false;
     return verifyToken(token) !== null;
 }

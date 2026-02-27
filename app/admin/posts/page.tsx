@@ -2,6 +2,10 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+const RichEditor = dynamic(() => import('@/components/admin/RichEditor'), { ssr: false });
+const MarkdownPreview = dynamic(() => import('@/components/admin/MarkdownPreview'), { ssr: false });
 
 interface Post {
     slug: string;
@@ -36,6 +40,7 @@ function PostsContent() {
     const [isEditing, setIsEditing] = useState(false);
     const [uploadingImage, setUploadingImage] = useState(false);
     const [message, setMessage] = useState('');
+    const [viewMode, setViewMode] = useState<'editor' | 'preview' | 'split'>('split');
 
     useEffect(() => {
         fetchPosts();
@@ -158,141 +163,206 @@ function PostsContent() {
     if (showForm) {
         return (
             <div>
-                <div className="flex items-center justify-between mb-8 pt-4">
+                <div className="flex items-center justify-between mb-6 pt-4">
                     <h1 className="font-serif text-[28px] text-[#e5e5e0] font-normal tracking-tight">
                         {isEditing ? 'Edit Post' : 'New Post'}
                     </h1>
-                    <button
-                        onClick={handleCancel}
-                        className="text-[13px] text-[#666] hover:text-[#e5e5e0] transition-colors"
-                    >
-                        Cancel
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {/* View mode toggle */}
+                        <div className="flex bg-[#1a1a1a] border border-[#2a2a2a] rounded-md overflow-hidden">
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('editor')}
+                                className={`px-3 py-1.5 text-[11px] transition-all ${viewMode === 'editor'
+                                        ? 'bg-[#2a2a2a] text-[#e5e5e0]'
+                                        : 'text-[#666] hover:text-[#e5e5e0]'
+                                    }`}
+                            >
+                                Editor
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('split')}
+                                className={`px-3 py-1.5 text-[11px] transition-all ${viewMode === 'split'
+                                        ? 'bg-[#2a2a2a] text-[#e5e5e0]'
+                                        : 'text-[#666] hover:text-[#e5e5e0]'
+                                    }`}
+                            >
+                                Split
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('preview')}
+                                className={`px-3 py-1.5 text-[11px] transition-all ${viewMode === 'preview'
+                                        ? 'bg-[#2a2a2a] text-[#e5e5e0]'
+                                        : 'text-[#666] hover:text-[#e5e5e0]'
+                                    }`}
+                            >
+                                Preview
+                            </button>
+                        </div>
+                        <button
+                            onClick={handleCancel}
+                            className="text-[13px] text-[#666] hover:text-[#e5e5e0] transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
-                    {/* Slug */}
-                    <div>
-                        <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
-                            Slug {isEditing && <span className="text-[#444]">(cannot change)</span>}
-                        </label>
-                        <input
-                            type="text"
-                            value={formData.slug}
-                            onChange={(e) =>
-                                setFormData((prev) => ({
-                                    ...prev,
-                                    slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
-                                }))
-                            }
-                            disabled={isEditing}
-                            placeholder="my-post-title"
-                            required
-                            className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
-                                text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none
-                                focus:border-[#444] transition-colors disabled:opacity-50"
-                        />
-                    </div>
-
-                    {/* Title */}
-                    <div>
-                        <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
-                            Title
-                        </label>
-                        <input
-                            type="text"
-                            value={formData.title}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-                            placeholder="Post Title"
-                            required
-                            className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
-                                text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none
-                                focus:border-[#444] transition-colors"
-                        />
-                    </div>
-
-                    {/* Date */}
-                    <div>
-                        <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
-                            Date
-                        </label>
-                        <input
-                            type="date"
-                            value={formData.date}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
-                            className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
-                                text-[15px] text-[#e5e5e0] outline-none
-                                focus:border-[#444] transition-colors [color-scheme:dark]"
-                        />
-                    </div>
-
-                    {/* Excerpt */}
-                    <div>
-                        <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
-                            Excerpt
-                        </label>
-                        <textarea
-                            value={formData.excerpt}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, excerpt: e.target.value }))}
-                            rows={3}
-                            placeholder="A brief summary of the post..."
-                            className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
-                                text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none
-                                focus:border-[#444] transition-colors resize-y leading-relaxed"
-                        />
-                    </div>
-
-                    {/* Cover Image */}
-                    <div>
-                        <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
-                            Cover Image
-                        </label>
-                        <div className="flex gap-3">
+                    {/* Top fields - always visible */}
+                    <div className={viewMode === 'preview' ? 'hidden' : ''}>
+                        {/* Slug */}
+                        <div className="mb-4">
+                            <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
+                                Slug {isEditing && <span className="text-[#444]">(cannot change)</span>}
+                            </label>
                             <input
                                 type="text"
-                                value={formData.cover}
+                                value={formData.slug}
                                 onChange={(e) =>
-                                    setFormData((prev) => ({ ...prev, cover: e.target.value }))
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+                                    }))
                                 }
-                                placeholder="/writing/cover.jpg or https://..."
-                                className="flex-1 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
+                                disabled={isEditing}
+                                placeholder="my-post-title"
+                                required
+                                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
+                                    text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none
+                                    focus:border-[#444] transition-colors disabled:opacity-50"
+                            />
+                        </div>
+
+                        {/* Title */}
+                        <div className="mb-4">
+                            <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
+                                Title
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.title}
+                                onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+                                placeholder="Post Title"
+                                required
+                                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
                                     text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none
                                     focus:border-[#444] transition-colors"
                             />
-                            <label className="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
-                                text-[13px] text-[#888] cursor-pointer hover:text-[#e5e5e0]
-                                hover:border-[#333] transition-all shrink-0">
-                                {uploadingImage ? 'Uploading...' : 'Upload'}
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
-                            </label>
                         </div>
-                        {formData.cover && (
-                            <div className="mt-3 w-[240px] aspect-[16/9] bg-[#1a1a1a] rounded overflow-hidden">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={formData.cover} alt="Cover preview" className="w-full h-full object-cover" />
+
+                        {/* Date + Excerpt row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
+                                    Date
+                                </label>
+                                <input
+                                    type="date"
+                                    value={formData.date}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, date: e.target.value }))}
+                                    className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
+                                        text-[15px] text-[#e5e5e0] outline-none
+                                        focus:border-[#444] transition-colors [color-scheme:dark]"
+                                />
                             </div>
-                        )}
+                            <div>
+                                <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
+                                    Excerpt
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.excerpt}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, excerpt: e.target.value }))}
+                                    placeholder="A brief summary..."
+                                    className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
+                                        text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none
+                                        focus:border-[#444] transition-colors"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Cover Image */}
+                        <div className="mb-4">
+                            <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
+                                Cover Image
+                            </label>
+                            <div className="flex gap-3">
+                                <input
+                                    type="text"
+                                    value={formData.cover}
+                                    onChange={(e) =>
+                                        setFormData((prev) => ({ ...prev, cover: e.target.value }))
+                                    }
+                                    placeholder="/writing/cover.jpg or https://..."
+                                    className="flex-1 px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
+                                        text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none
+                                        focus:border-[#444] transition-colors"
+                                />
+                                <label className="px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
+                                    text-[13px] text-[#888] cursor-pointer hover:text-[#e5e5e0]
+                                    hover:border-[#333] transition-all shrink-0">
+                                    {uploadingImage ? 'Uploading...' : 'Upload'}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
+                                </label>
+                            </div>
+                            {formData.cover && (
+                                <div className="mt-3 w-[200px] aspect-[16/9] bg-[#1a1a1a] rounded overflow-hidden">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={formData.cover} alt="Cover preview" className="w-full h-full object-cover" />
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Content */}
+                    {/* Content: Editor + Preview */}
                     <div>
-                        <label className="block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2">
-                            Content (Markdown)
+                        <label className={`block text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2 ${viewMode === 'preview' ? 'hidden' : ''}`}>
+                            Content
                         </label>
-                        <textarea
-                            value={formData.content}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
-                            rows={16}
-                            placeholder="Write your post content in markdown..."
-                            className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-md
-                                text-[15px] text-[#e5e5e0] placeholder-[#444] outline-none font-mono
-                                focus:border-[#444] transition-colors resize-y leading-relaxed"
-                        />
+
+                        {viewMode === 'split' ? (
+                            <div className="grid grid-cols-2 gap-4" style={{ minHeight: '500px' }}>
+                                <div>
+                                    <RichEditor
+                                        value={formData.content}
+                                        onChange={(val) => setFormData((prev) => ({ ...prev, content: val }))}
+                                        folder="writing"
+                                    />
+                                </div>
+                                <div>
+                                    <div className="text-[11px] uppercase tracking-[0.1em] text-[#555] mb-2 text-right">
+                                        Live Preview
+                                    </div>
+                                    <MarkdownPreview
+                                        content={formData.content}
+                                        title={formData.title}
+                                        date={formData.date}
+                                        cover={formData.cover}
+                                    />
+                                </div>
+                            </div>
+                        ) : viewMode === 'editor' ? (
+                            <RichEditor
+                                value={formData.content}
+                                onChange={(val) => setFormData((prev) => ({ ...prev, content: val }))}
+                                folder="writing"
+                            />
+                        ) : (
+                            <MarkdownPreview
+                                content={formData.content}
+                                title={formData.title}
+                                date={formData.date}
+                                cover={formData.cover}
+                            />
+                        )}
                     </div>
 
                     {/* Submit */}

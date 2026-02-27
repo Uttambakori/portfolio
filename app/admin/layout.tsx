@@ -101,7 +101,7 @@ export default function AdminLayout({
 
             {/* Main content */}
             <main className="flex-1 min-h-screen overflow-auto">
-                <div className="max-w-[960px] mx-auto px-6 md:px-10 py-10">
+                <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-10">
                     {children}
                 </div>
             </main>
