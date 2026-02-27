@@ -14,16 +14,16 @@ const navLinks = [
 
 const panelVariants = {
     closed: {
-        x: '100%',
+        opacity: 0,
         transition: {
-            duration: 0.5,
+            duration: 0.3,
             ease: [0.32, 0, 0.67, 0] as const,
         },
     },
     open: {
-        x: '0%',
+        opacity: 1,
         transition: {
-            duration: 0.6,
+            duration: 0.4,
             ease: [0.22, 1, 0.36, 1] as const,
         },
     },
@@ -154,80 +154,74 @@ export default function Navigation() {
             {/* Mobile slide-in panel */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
-                    <>
-                        {/* Backdrop */}
-                        <motion.div
-                            variants={backdropVariants}
-                            initial="closed"
-                            animate="open"
-                            exit="closed"
-                            transition={{ duration: 0.4 }}
-                            className="fixed inset-0 bg-primary/10 backdrop-blur-[6px] md:hidden z-40"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        />
-
-                        {/* Panel */}
-                        <motion.div
-                            variants={panelVariants}
-                            initial="closed"
-                            animate="open"
-                            exit="closed"
-                            className="fixed top-0 right-0 bottom-0 w-[280px] bg-background shadow-[-8px_0_30px_rgba(0,0,0,0.05)] md:hidden z-50 flex flex-col"
-                        >
-                            {/* Panel header */}
-                            <div className="px-8 py-6 flex justify-end">
-                                <button
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="text-[14px] uppercase tracking-[0.08em] font-sans text-secondary hover:text-primary transition-colors duration-300 select-none"
-                                    aria-label="Close menu"
-                                >
-                                    Close
-                                </button>
-                            </div>
-
-                            {/* Panel links */}
-                            <div className="flex-1 flex flex-col justify-center px-8 gap-1">
-                                {navLinks.map((link, i) => (
-                                    <motion.div
-                                        key={link.href}
-                                        variants={linkVariants}
-                                        initial="closed"
-                                        animate="open"
-                                        exit="closed"
-                                        custom={i}
-                                    >
-                                        <Link
-                                            href={link.href}
-                                            className={`block py-3 font-serif text-[28px] no-underline transition-colors duration-300 ${pathname === link.href || pathname?.startsWith(link.href + '/')
-                                                ? 'text-primary'
-                                                : 'text-secondary hover:text-primary'
-                                                }`}
-                                        >
-                                            {link.label}
-                                        </Link>
-                                        {i < navLinks.length - 1 && (
-                                            <div className="h-[1px] bg-accent-secondary" />
-                                        )}
-                                    </motion.div>
-                                ))}
-                            </div>
-
-                            {/* Panel footer */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1, transition: { delay: 0.4 } }}
-                                exit={{ opacity: 0 }}
-                                className="px-8 py-8 border-t border-accent-secondary"
+                    /* Full-screen mobile menu with solid background */
+                    <motion.div
+                        variants={panelVariants}
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        className="fixed inset-0 bg-background md:hidden z-50 flex flex-col"
+                    >
+                        {/* Menu header */}
+                        <div className="px-6 py-5 flex items-center justify-between">
+                            <Link
+                                href="/"
+                                className="font-serif text-xl text-primary no-underline"
+                                onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                <a
-                                    href="mailto:hello@uttambakori.com"
-                                    className="text-caption text-secondary no-underline hover:text-primary transition-colors duration-300"
+                                Uttam Bakori
+                            </Link>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-[14px] uppercase tracking-[0.08em] font-sans text-secondary hover:text-primary transition-colors duration-300 select-none"
+                                aria-label="Close menu"
+                            >
+                                Close
+                            </button>
+                        </div>
+
+                        {/* Menu links */}
+                        <div className="flex-1 flex flex-col justify-center px-10 gap-1">
+                            {navLinks.map((link, i) => (
+                                <motion.div
+                                    key={link.href}
+                                    variants={linkVariants}
+                                    initial="closed"
+                                    animate="open"
+                                    exit="closed"
+                                    custom={i}
                                 >
-                                    hello@uttambakori.com
-                                </a>
-                            </motion.div>
+                                    <Link
+                                        href={link.href}
+                                        className={`block py-4 font-serif text-[32px] no-underline transition-colors duration-300 ${pathname === link.href || pathname?.startsWith(link.href + '/')
+                                            ? 'text-primary'
+                                            : 'text-secondary hover:text-primary'
+                                            }`}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                    {i < navLinks.length - 1 && (
+                                        <div className="h-[1px] bg-accent-secondary" />
+                                    )}
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Menu footer */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { delay: 0.4 } }}
+                            exit={{ opacity: 0 }}
+                            className="px-10 py-8 border-t border-accent-secondary"
+                        >
+                            <a
+                                href="mailto:hello@uttambakori.com"
+                                className="text-caption text-secondary no-underline hover:text-primary transition-colors duration-300"
+                            >
+                                hello@uttambakori.com
+                            </a>
                         </motion.div>
-                    </>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </nav>
