@@ -9,6 +9,8 @@ interface RichEditorProps {
     value: string;
     onChange: (value: string) => void;
     folder?: string;
+    onAiFormat?: () => void;
+    aiFormatting?: boolean;
 }
 
 interface ToolbarButton {
@@ -18,7 +20,7 @@ interface ToolbarButton {
     title: string;
 }
 
-export default function RichEditor({ value, onChange, folder = 'uploads' }: RichEditorProps) {
+export default function RichEditor({ value, onChange, folder = 'uploads', onAiFormat, aiFormatting }: RichEditorProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const pdfInputRef = useRef<HTMLInputElement>(null);
@@ -316,6 +318,24 @@ export default function RichEditor({ value, onChange, folder = 'uploads' }: Rich
                 >
                     ◆ Figma
                 </button>
+
+                {onAiFormat && (
+                    <>
+                        <div className="w-px h-5 bg-[#2a2a2a] mx-1" />
+                        <button
+                            type="button"
+                            onClick={onAiFormat}
+                            disabled={aiFormatting || !value.trim()}
+                            title="Format content with AI — adds headings, lists, tables, bold etc."
+                            className={`px-3 py-1.5 text-[12px] rounded transition-all font-medium ${aiFormatting
+                                    ? 'text-[#8888cc] bg-[#1a1e2e] animate-pulse'
+                                    : 'text-[#8888cc] hover:text-[#aaaaee] hover:bg-[#1a1e2e]'
+                                } disabled:opacity-30`}
+                        >
+                            {aiFormatting ? '🤖 Formatting...' : '🤖 Format'}
+                        </button>
+                    </>
+                )}
 
                 {uploading && (
                     <span className="text-[11px] text-[#888] ml-2 animate-pulse">
