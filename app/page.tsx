@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import FadeIn from '@/components/FadeIn';
 import WritingEntry from '@/components/WritingEntry';
+import MagneticName from '@/components/MagneticName';
 import { getFeaturedProjects, getWritingPosts } from '@/lib/content';
 
 export default function HomePage() {
@@ -15,9 +16,7 @@ export default function HomePage() {
 
       <FadeIn>
         <div className="text-center">
-          <h1 className="font-serif text-[36px] md:text-[64px] text-primary font-normal tracking-tight">
-            Uttam Bakori
-          </h1>
+          <MagneticName />
           <p className="mt-6 text-body-mobile md:text-body text-secondary">
             Visual designer. Occasionally writes.
           </p>

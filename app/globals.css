@@ -183,3 +183,20 @@
     font-size: 18px;
   }
 }
+
+/* Magnetic Letters Mobile Fallback */
+@keyframes idleFloat {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  33% {
+    transform: translate(0.5px, -1px);
+  }
+
+  66% {
+    transform: translate(-0.5px, 0.5px);
+  }
+}
