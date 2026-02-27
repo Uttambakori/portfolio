@@ -12,36 +12,14 @@ const navLinks = [
     { href: '/about', label: 'About' },
 ];
 
-const panelVariants = {
-    closed: {
-        opacity: 0,
-        transition: {
-            duration: 0.3,
-            ease: [0.32, 0, 0.67, 0] as const,
-        },
-    },
-    open: {
-        opacity: 1,
-        transition: {
-            duration: 0.4,
-            ease: [0.22, 1, 0.36, 1] as const,
-        },
-    },
-};
-
-const backdropVariants = {
-    closed: { opacity: 0 },
-    open: { opacity: 1 },
-};
-
 const linkVariants = {
-    closed: { opacity: 0, x: 30 },
+    closed: { opacity: 0, y: 20 },
     open: (i: number) => ({
         opacity: 1,
-        x: 0,
+        y: 0,
         transition: {
             duration: 0.4,
-            delay: 0.15 + i * 0.08,
+            delay: 0.1 + i * 0.08,
             ease: [0.22, 1, 0.36, 1] as const,
         },
     }),
@@ -79,91 +57,106 @@ export default function Navigation() {
     }, [isMobileMenuOpen]);
 
     return (
-        <nav
-            className={`w-full px-6 md:px-10 lg:px-16 py-5 md:py-8 fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out-expo ${isScrolled
-                ? 'bg-background/80 backdrop-blur-[12px] shadow-[0_1px_0_rgba(0,0,0,0.04)]'
-                : 'bg-transparent'
-                }`}
-        >
-            <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-                <Link
-                    href="/"
-                    className="font-serif text-xl text-primary no-underline transition-colors duration-300 hover:text-secondary"
-                >
-                    Uttam Bakori
-                </Link>
+        <>
+            {/* Navigation bar */}
+            <nav
+                className={`w-full px-6 md:px-10 lg:px-16 py-5 md:py-8 fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out-expo ${isScrolled
+                    ? 'bg-background/80 backdrop-blur-[12px] shadow-[0_1px_0_rgba(0,0,0,0.04)]'
+                    : 'bg-transparent'
+                    }`}
+            >
+                <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+                    <Link
+                        href="/"
+                        className="font-serif text-xl text-primary no-underline transition-colors duration-300 hover:text-secondary"
+                    >
+                        Uttam Bakori
+                    </Link>
 
-                {/* Desktop nav */}
-                <div className="hidden md:flex items-center gap-8">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className={`text-[14px] uppercase tracking-[0.05em] font-sans no-underline transition-colors duration-300 relative ${pathname === link.href || pathname?.startsWith(link.href + '/')
-                                ? 'text-primary'
-                                : 'text-secondary hover:text-primary'
-                                }`}
-                        >
-                            {link.label}
-                            {(pathname === link.href || pathname?.startsWith(link.href + '/')) && (
+                    {/* Desktop nav */}
+                    <div className="hidden md:flex items-center gap-8">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={`text-[14px] uppercase tracking-[0.05em] font-sans no-underline transition-colors duration-300 relative ${pathname === link.href || pathname?.startsWith(link.href + '/')
+                                    ? 'text-primary'
+                                    : 'text-secondary hover:text-primary'
+                                    }`}
+                            >
+                                {link.label}
+                                {(pathname === link.href || pathname?.startsWith(link.href + '/')) && (
+                                    <motion.span
+                                        layoutId="nav-underline"
+                                        className="absolute -bottom-1 left-0 right-0 h-[1px] bg-primary"
+                                        transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}
+                                    />
+                                )}
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Mobile menu toggle */}
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="md:hidden relative overflow-hidden h-[20px] flex items-center"
+                        aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                        aria-expanded={isMobileMenuOpen}
+                    >
+                        <AnimatePresence mode="wait">
+                            {isMobileMenuOpen ? (
                                 <motion.span
-                                    layoutId="nav-underline"
-                                    className="absolute -bottom-1 left-0 right-0 h-[1px] bg-primary"
-                                    transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}
-                                />
+                                    key="close"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                                    className="text-[14px] uppercase tracking-[0.08em] font-sans text-primary select-none"
+                                >
+                                    Close
+                                </motion.span>
+                            ) : (
+                                <motion.span
+                                    key="menu"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                                    className="text-[14px] uppercase tracking-[0.08em] font-sans text-primary select-none"
+                                >
+                                    Menu
+                                </motion.span>
                             )}
-                        </Link>
-                    ))}
+                        </AnimatePresence>
+                    </button>
                 </div>
+            </nav>
 
-                {/* Mobile menu toggle — text-based */}
-                <button
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="md:hidden relative overflow-hidden h-[20px] flex items-center"
-                    aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-                    aria-expanded={isMobileMenuOpen}
-                >
-                    <AnimatePresence mode="wait">
-                        {isMobileMenuOpen ? (
-                            <motion.span
-                                key="close"
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -8 }}
-                                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                                className="text-[14px] uppercase tracking-[0.08em] font-sans text-primary select-none"
-                            >
-                                Close
-                            </motion.span>
-                        ) : (
-                            <motion.span
-                                key="menu"
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -8 }}
-                                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                                className="text-[14px] uppercase tracking-[0.08em] font-sans text-primary select-none"
-                            >
-                                Menu
-                            </motion.span>
-                        )}
-                    </AnimatePresence>
-                </button>
-            </div>
-
-            {/* Mobile slide-in panel */}
+            {/* ===== MOBILE FULL-SCREEN MENU (outside <nav> to avoid height clipping) ===== */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
-                    /* Full-screen mobile menu with solid background */
                     <motion.div
-                        variants={panelVariants}
-                        initial="closed"
-                        animate="open"
-                        exit="closed"
-                        className="fixed inset-0 bg-background md:hidden z-50 flex flex-col"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="md:hidden"
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            width: '100vw',
+                            height: '100vh',
+                            backgroundColor: '#FAFAF8',
+                            zIndex: 9999,
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
                     >
                         {/* Menu header */}
-                        <div className="px-6 py-5 flex items-center justify-between">
+                        <div className="px-6 py-5 flex items-center justify-between shrink-0">
                             <Link
                                 href="/"
                                 className="font-serif text-xl text-primary no-underline"
@@ -212,7 +205,7 @@ export default function Navigation() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1, transition: { delay: 0.4 } }}
                             exit={{ opacity: 0 }}
-                            className="px-10 py-8 border-t border-accent-secondary"
+                            className="px-10 py-8 border-t border-accent-secondary shrink-0"
                         >
                             <a
                                 href="mailto:hello@uttambakori.com"
@@ -224,6 +217,6 @@ export default function Navigation() {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </nav>
+        </>
     );
 }
