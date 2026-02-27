@@ -167,9 +167,6 @@ function GalleryContent() {
                     setFormData((prev) => ({ ...prev, width: img.naturalWidth, height: img.naturalHeight }));
                 };
                 img.src = data.path;
-
-                // Auto-categorize with AI
-                categorizeImage(data.path);
             }
         } catch {
             setMessage('Upload failed');
