@@ -208,10 +208,10 @@ export default function Navigation() {
                             className="px-10 py-8 border-t border-accent-secondary shrink-0"
                         >
                             <a
-                                href="mailto:hello@uttambakori.com"
+                                href="mailto:itsuttampatel@gmail.com"
                                 className="text-caption text-secondary no-underline hover:text-primary transition-colors duration-300"
                             >
-                                hello@uttambakori.com
+                                itsuttampatel@gmail.com
                             </a>
                         </motion.div>
                     </motion.div>

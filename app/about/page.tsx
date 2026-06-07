@@ -16,7 +16,7 @@ export default function AboutPage() {
                     <FadeIn className="w-full md:w-[40%]">
                         <div className="bg-image-placeholder rounded-[6px] overflow-hidden aspect-[3/4] relative max-w-[400px]">
                             <Image
-                                src="/about/portrait.jpg"
+                                src="/about/portrait.png"
                                 alt="Portrait of Uttam Bakori"
                                 fill
                                 className="object-cover"
@@ -31,28 +31,25 @@ export default function AboutPage() {
                         <div className="max-w-[520px]">
                             <div className="text-body-mobile md:text-body text-primary leading-[1.7] space-y-6">
                                 <p>
-                                    I&apos;m a visual designer. I think about how things should feel before I think about how they should look.
+                                    I&apos;m Uttam Bakori. I&apos;m a visual designer who thinks about how things should feel before I think about how they should look.
                                 </p>
                                 <p>
-                                    My work lives in the space between intention and perception — the gap where a color becomes a mood, where typography becomes a voice, where negative space becomes the loudest element in the room.
+                                    My work lives in the space between intention and perception — the gap where typography becomes a voice, and where kinetic motion meets minimalist grids. From editorial systems to brand identities, I specialize in designing structures that feel balanced yet dynamic.
                                 </p>
                                 <p>
-                                    I&apos;ve worked on brand identities, editorial design, packaging, and digital experiences. The thread connecting all of it is a belief that design should be quiet enough for people to hear their own thoughts.
+                                    I focus on brand visual systems, creative direction, and digital experiences. My design philosophy is rooted in layout precision, bold typographic hierarchy, and using high-contrast color elements to bring energy to static spaces.
                                 </p>
                                 <p>
-                                    When I&apos;m not designing, I&apos;m writing. Or looking at light. Or sitting in a room wondering why it feels the way it does.
-                                </p>
-                                <p>
-                                    I believe the world could be more beautiful, more calm, more thoughtful. This website is proof that I practice what I believe.
+                                    When I&apos;m not designing, I&apos;m exploring new visual frameworks, writing about typography, and thinking about how visual layouts shape the way we understand the world.
                                 </p>
                             </div>
 
                             <div className="mt-10">
                                 <a
-                                    href="mailto:hello@uttambakori.com"
+                                    href="mailto:itsuttampatel@gmail.com"
                                     className="text-body text-link no-underline transition-colors duration-300 hover:text-primary"
                                 >
-                                    hello@uttambakori.com
+                                    itsuttampatel@gmail.com
                                 </a>
                                 <div className="mt-3 text-body text-secondary">
                                     <a

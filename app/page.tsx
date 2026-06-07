@@ -18,10 +18,10 @@ export default function HomePage() {
         <div className="text-center">
           <MagneticName />
           <p className="mt-6 text-body-mobile md:text-body text-secondary">
-            Visual designer. Occasionally writes.
+            Visual designer specializing in brand identity & editorial systems.
           </p>
           <p className="mt-4 text-caption text-secondary/70">
-            Based in Tokyo, thinking about how things should feel.
+            Thinking about how things should feel.
           </p>
         </div>
       </FadeIn>

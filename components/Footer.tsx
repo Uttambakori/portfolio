@@ -30,7 +30,7 @@ export default function Footer() {
                     {/* Center: social links */}
                     <div className="flex items-center gap-4 text-caption">
                         <a
-                            href="mailto:hello@uttambakori.com"
+                            href="mailto:itsuttampatel@gmail.com"
                             className="text-secondary no-underline transition-colors duration-300 hover:text-primary"
                         >
                             Email
